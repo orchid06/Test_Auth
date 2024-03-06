@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.user')
 
 @section('content')
 <div class="container">
@@ -8,7 +8,19 @@
                 <div class="card-header">{{ __('Register') }}</div>
 
                 <div class="card-body">
-                    <form method="POST" action="{{ route('create') }}">
+                    @if(Session::get('success'))
+                    <div class="alert alert-success">
+                         {{Session::get('success')}}
+                    </div>
+                    @endif
+
+                    @if(Session::get('fail'))
+                    <div class="alert alert-danger">
+                         {{Session::get('fail')}}
+                    </div>
+                    @endif
+                    
+                    <form method="POST" action="{{ route('user.create') }}">
                         @csrf
 
                         <div class="row mb-3">
@@ -54,10 +66,16 @@
                         </div>
 
                         <div class="row mb-3">
-                            <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
+                            <label for="cpassword" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                             <div class="col-md-6">
-                                <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                <input id="cpassword" type="password" class="form-control @error('cpassword') is-invalid @enderror" name="cpassword" required autocomplete="new-password">
+
+                                @error('cpassword')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                             </div>
                         </div>
 

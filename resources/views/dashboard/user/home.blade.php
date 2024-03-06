@@ -39,13 +39,6 @@
                             <div class="col-11">
                                 <!-- Button trigger modal -->
                                 <div class="row">
-                                    <div class="col">
-
-                                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#inputModal">
-                                            Add New Product
-                                        </button>
-
-                                    </div>
                                     <div class="col-2 text-righ">
                                         <a href="{{route('cart.page')}}" type="button" class="btn btn-outline-success">
                                             My Cart
@@ -68,81 +61,6 @@
                                                 </div>
                                             </div>
 
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Modal -->
-                        <div class="mt-3">
-
-                            <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h6 class="modal-title text center" id="exampleModalLabel">Add New product</h6>
-                                        </div>
-                                        <form action="{{route('product.store')}}" method="post" enctype="multipart/form-data">
-                                            @csrf
-                                            <div class="modal-body">
-                                                <div class="container">
-                                                    <div class="row">
-
-                                                        <div class="form-row">
-                                                            <label for="title" class="form-label">Product Name :</label>
-                                                            <input type="text" class="form-control" name="title" id="title" placeholder="Enter Name" value="{{old('title')}}">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="description" class="form-label">Product description :</label>
-                                                            <textarea class="form-control" id="description" name="description" rows="3" placeholder="Enter Description">{{old('description')}}</textarea>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="price" class="form-label">Price :</label>
-                                                            <input type="text" class="form-control" name="price" id="price" placeholder="BDT" value="{{old('price')}}">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="discount" class="form-label">Discount :</label>
-                                                            <input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" value="{{old('discount')}}">
-
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="type" id="flat" value="0">
-                                                                <label class="form-check-label" for="flat">
-                                                                    ৳
-                                                                </label>
-                                                            </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="type" id="percentage" checked value="1">
-                                                                <label class="form-check-label" for="percentage">
-                                                                    %
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="qty" class="form-label">Quantity :</label>
-                                                            <input type="text" class="form-control" name="qty" id="qty" placeholder="Quantity" value="{{old('qty')}}">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="image" class="form-label">Product Image :</label>
-                                                            <input class="form-control" type="file" id="image" name="image">
-                                                        </div>
-
-                                                        <div class="form-row">
-                                                            <label for="gallery_image" class="form-label">Gallery Image:</label>
-                                                            <input class="form-control" type="file" id="gallery_image" name="gallery_image[]" multiple>
-                                                        </div>
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-success">Add</button>
-                                            </div>
                                         </form>
                                     </div>
                                 </div>
@@ -363,36 +281,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Table 1 - Inventory -->
-                        <div class="col">
-                            <div class="card widget-card border-light shadow-sm">
-                                <div class="card-body p-4">
-                                    <h5 class="card-title widget-card-title mb-4">Inventory</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-borderless bsb-table-xl text-nowrap align-middle m-0">
-                                            <thead>
-                                                <tr>
-                                                    <th>Total Product</th>
-                                                    <th>Total Quantity</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$totalProduct}}</h6>
-                                                    </td>
-                                                    <td>
-                                                        <h6 class="mb-1">{{$totalQty}}</h6>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
             </section>
