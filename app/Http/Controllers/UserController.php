@@ -56,11 +56,11 @@ class UserController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/user/login');
+        return redirect('/');
     }
 
-    public function dashboard(){
-
+    public function index()
+    {
         $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
 
         $totalQty = $totalPrice = 0;

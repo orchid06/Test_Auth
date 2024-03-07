@@ -2,11 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Admin;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Models\Cart;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+
 
 class AdminController extends Controller
 {
@@ -22,7 +26,7 @@ class AdminController extends Controller
 
         $creds = $request->only('email', 'password');
         if (Auth::guard('admin')->attempt($creds)) {
-            return back();
+            return back();  
         } else {
             return redirect()->route('admin.login')->with('fail', 'Incorrect credentials');
         }
@@ -31,24 +35,23 @@ class AdminController extends Controller
     public function logout()
     {
         Auth::logout();
-        return redirect('/admin/login');
+        return redirect('/');
     }
 
-//     public function home() : View
-//     {
+    public function index(): View
+    {
+        $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
 
-//         $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
+        $totalQty = $totalPrice = 0;
 
-//         $totalQty = $totalPrice = 0;
+        $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
+            $cartQty     = $product->carts->sum('qty');
+            $totalQty   += $product->qty + $cartQty;
+            return $product;
+        });
 
-//         $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
-//             $cartQty     = $product->carts->sum('qty');
-//             $totalQty   += $product->qty + $cartQty;
-//             return $product;
-//         });
+        $totalProduct = Product::count();
 
-//         $totalProduct = Product::count();
-
-//         return view('dashboard.admin.home', compact('products', 'totalQty', 'totalProduct'));
-//     }
+        return view('dashboard.admin.home', compact('products', 'totalQty', 'totalProduct'));
+    }
 }

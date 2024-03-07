@@ -78,7 +78,7 @@
                         <div class="col-4">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <img src="uploads/{{$product->image}}" style="width:250px; height:150px;">
+                                    <img src="{{url('uploads/'.$product->image)}}" style="width:250px; height:150px;">
                                     <h6 class="card-subtitle mb-1 text-muted"></h6>
                                     <a href="{{route('product.page', ['id'=>$product->id])}}" target="_blank">
                                         <h5>{{$product->title}}</h5>
@@ -110,13 +110,13 @@
                                                     Add To Cart
                                                 </button>
 
-                                                <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editModal{{$product->id}}">
+                                                <!-- <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editModal{{$product->id}}">
                                                     Edit
                                                 </button>
 
                                                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{$product->id}}">
                                                     Delete
-                                                </button>
+                                                </button> -->
 
                                             </div>
 

@@ -35,7 +35,7 @@ Route::prefix('user')->name('user.')->group(function () {
 
     Route::middleware(['auth'])->group(function () {
 
-        Route::view('/home', [UserController::class, 'dashboard'])->name('dashboard');
+        Route::get('/home', [UserController::class, 'index'])->name('index');
         Route::post('/logout', [UserController::class, 'logout'])->name('logout');
     });
 });
@@ -50,7 +50,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     });
 
     Route::middleware(['auth:admin'])->group(function () {
-       Route::view('/home', 'dashboard.admin.home')->name('home');
+        Route::get('/home', [AdminController::class, 'index'])->name('index');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
     });
 });
@@ -58,7 +58,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::get('/', [ProductController::class, 'index'])->name('index');
+Route::get('/Dashboard', [ProductController::class, 'index'])->name('index');
+
+Route::view('/', 'login');
 
 Route::post('/store', [ProductController::class, 'store'])->name('product.store');
 

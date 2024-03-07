@@ -77,7 +77,7 @@
                         @guest
                         @if (Route::has('admin.login'))
                         <li class="nav-item">
-                            <a class="nav-link" href="{{ route('admin.login') }}">{{ __('Login') }}</a>
+                            <a class="nav-link" href="{{ route('user.login') }}">{{ __('User Login') }}</a>
                         </li>
                         @endif
                         
