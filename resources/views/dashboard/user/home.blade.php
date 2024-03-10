@@ -37,10 +37,10 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-11">
-                                <!-- Button trigger modal -->
+                                <!-- Button trigger myCart -->
                                 <div class="row">
                                     <div class="col-2 text-righ">
-                                        <a href="{{route('cart.page')}}" type="button" class="btn btn-outline-success">
+                                        <a href="{{ Auth::check() ? route('cart.index', ['user_id' => Auth::user()->id]) : '#' }}" type="button" class="btn btn-outline-success">
                                             My Cart
                                             </button><i class="bi bi-cart"></i>
                                         </a>
@@ -88,10 +88,11 @@
                                     <h6 class="card-title mb-1 text-muted">In Stock: {{$product->qty}}</h6>
                                     <h6 class="card-title mb-1 text-muted">Discount: {{$product->discount}} {{$product->discountType}}</h6>
                                     <h6 class="card-title mb-1 text-muted">Discounted Price : {{$product->discountedPrice}}</h6>
-                                    <!--Card Buttons-->
+                                    <!--addTOCart Buttons-->
                                     <h6 class="card-title" style="text-align:right;">
 
-                                        <form action="{{route('product.cart', ['id'=>$product->id])}}" method="post">
+
+                                        <form action="{{ route('product.addToCart', ['id' => $product->id ]) }}" method="post">
                                             @csrf
 
                                             <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">

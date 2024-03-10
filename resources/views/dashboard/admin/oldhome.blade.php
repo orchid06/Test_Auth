@@ -1,4 +1,4 @@
-@extends('layouts.user')
+@extends('layouts.admin')
 
 @section('content')
 
@@ -37,7 +37,7 @@
                     <div class="container">
                         <div class="row">
                             <div class="col-11">
-                                <!-- myCart Button -->
+                                <!-- Button trigger modal -->
                                 <div class="row">
                                     <div class="col">
 
@@ -53,7 +53,7 @@
                                         </a>
                                     </div>
                                 </div>
-                                <!-- Search -->
+
                                 <div class="mt-3">
                                     <div class="col text-end">
                                         <form action="{{route('product.search')}}" method="get">
@@ -73,7 +73,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- Add New Product Modal -->
+                        <!-- Modal -->
                         <div class="mt-3">
 
                             <div class="modal fade" id="inputModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -160,7 +160,7 @@
                         <div class="col-4">
                             <div class="card" style="width: 18rem;">
                                 <div class="card-body">
-                                    <img src="uploads/{{$product->image}}" style="width:250px; height:150px;">
+                                    <img src="{{url('uploads/'.$product->image)}}" style="width:250px; height:150px;">
                                     <h6 class="card-subtitle mb-1 text-muted"></h6>
                                     <a href="{{route('product.page', ['id'=>$product->id])}}" target="_blank">
                                         <h5>{{$product->title}}</h5>
@@ -173,7 +173,7 @@
                                     <!--Card Buttons-->
                                     <h6 class="card-title" style="text-align:right;">
 
-                                        <form action="{{route('product.addToCart', ['ids'=> $product->id])}}" method="post">
+                                        <form action="{{route('product.addToCart', ['id'=>$product->id])}}" method="post">
                                             @csrf
 
                                             <button class="btn btn-link px-2" onclick="this.parentNode.querySelector('input[type=number]').stepDown()">

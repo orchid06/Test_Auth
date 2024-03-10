@@ -9,9 +9,12 @@ use App\Models\Gallery;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
+use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
+
 
     public function index(): View
     {
@@ -107,7 +110,7 @@ class ProductController extends Controller
         return back()->with('success', 'Data stored successfully');
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $id):RedirectResponse
     {
         $request->validate([
             'title'       => 'required|max:50',
@@ -154,14 +157,13 @@ class ProductController extends Controller
         return back()->with('success', 'Product Updated');
     }
 
-    public function delete($id)
+    public function delete( int $id):RedirectResponse
     {
 
         $product = Product::findOrfail($id);
 
-        $cartItems = Cart::where('product_id', $product->id)->count();
+        if (Cart::where('product_id', $product->id)->count() > 0) {
 
-        if ($cartItems > 0) {
             return back()->with('error', 'This item is added in cart and can not be deleted.');
         }
 
@@ -184,7 +186,7 @@ class ProductController extends Controller
         return back()->with('success', 'Product deleted successfully.');
     }
 
-    public function search(Request $request)
+    public function search(Request $request):View
     {
         $search = $request->input('search');
 
@@ -203,9 +205,8 @@ class ProductController extends Controller
         ));
     }
 
-    public function cart(Request $request, $id)
+    public function addToCart(Request $request, $id):RedirectResponse
     {
-
 
         $product = Product::findOrfail($id);
 
@@ -218,9 +219,9 @@ class ProductController extends Controller
         if ($existingCartItem) {
             $existingCartItem->update(['qty' => $existingCartItem->qty + $request->input('qty')]);
         } else {
-            $productPrice = $product->discountedPrice ?? $product->price;
 
             Cart::create([
+                'user_id'     => Auth::user()->id,
                 'product_id'  => $product->id,
                 'qty'         => $request->input('qty'),
                 'price'       => $product->price,
@@ -234,10 +235,12 @@ class ProductController extends Controller
         return back()->with('success', 'Item added to cart successfully.');
     }
 
-    public function cartpage()
+    public function cartIndex():View
     {
-        $cartProducts = Cart::with('product')->latest()->get();
+        $user  = auth('web')->user();
 
+        $cartProducts = $user->carts;
+        
         $totalCartProduct = $cartProducts->count();
         $totalCartQty     = $cartProducts->sum('qty');
         $totalCartPrice   = $cartProducts->sum(function ($cartProduct) {
@@ -248,7 +251,7 @@ class ProductController extends Controller
     }
 
 
-    public function cartQtyUpdate(Request $request, $product_id)
+    public function cartQtyUpdate(Request $request, $product_id):RedirectResponse
     {
         $cart     = Cart::where('product_id', $product_id)->firstOrfail();
         $product  = $cart->product;
@@ -269,6 +272,7 @@ class ProductController extends Controller
 
         $newQty = $stockQty;
 
+        #todo simplification needed using  match or switch 
         if ($qtyDifference > 0) {
             $newQty = $stockQty + $qtyDifference;
         } elseif ($qtyDifference < 0) {
@@ -285,13 +289,13 @@ class ProductController extends Controller
     }
 
 
-    public function cartProductDelete($id)
+    public function cartProductDelete($id):RedirectResponse
     {
         $cartProduct = Cart::findOrFail($id);
 
         $product = $cartProduct->product;
 
-        
+
         $product->update(['qty' => $product->qty + $cartProduct->qty]);
 
         $cartProduct->delete();
@@ -300,7 +304,7 @@ class ProductController extends Controller
     }
 
 
-    public function productDetails($id)
+    public function productDetails($id):View
     {
 
         $product = Product::findOrfail($id);

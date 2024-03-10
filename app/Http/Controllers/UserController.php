@@ -8,10 +8,12 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Product;
 use App\Models\Cart;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function create(Request $request)
+    public function create(Request $request):RedirectResponse
     {
 
         $request->validate([
@@ -22,21 +24,17 @@ class UserController extends Controller
         ]);
 
         $user = new User();
-        $user->name     = $request->name;
+        $user->name     = $request->input('name');
         $user->email    = $request->email;
-        $user->password = Hash::make($request->password);
-        $save = $user->save();
+        $user->password = ($request->password);
+        $user->save();
 
-        Auth::login($user);
+        Auth::guard('web')->login($user);
 
-        if ($save) {
-            return redirect()->route('index')->with('success', 'You are now registered successfully');
-        } else {
-            return redirect()->back()->with('fail', 'something went wrong, failed to register');
-        }
+        return redirect()->route('user.index')->with('success', 'You are now registered successfully');
     }
 
-    public function check(Request $request)
+    public function check(Request $request): RedirectResponse
     {
         $request->validate([
             'email'    => 'required|email|exists:users,email',
@@ -45,21 +43,18 @@ class UserController extends Controller
             'email.exists' => 'This email is not exists on user table'
         ]);
 
-        $creds = $request->only('email', 'password');
-        if (Auth::guard('web')->attempt($creds)) {
-            return back();
-        } else {
-            return redirect()->route('user.login')->with('fail', 'Incorrect credentials');
-        }
+        return   Auth::guard('web')->attempt($request->only('email', 'password'))
+                   ? back()
+                   : redirect()->route('user.login')->with('fail', 'Incorrect credentials');
     }
 
-    public function logout()
+    public function logout(): RedirectResponse
     {
         Auth::logout();
         return redirect('/');
     }
 
-    public function index()
+    public function index():View
     {
         $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
 

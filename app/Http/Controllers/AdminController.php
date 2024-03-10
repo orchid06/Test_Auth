@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Models\Cart;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -15,7 +16,7 @@ use Illuminate\View\View;
 class AdminController extends Controller
 {
 
-    public function check(Request $request)
+    public function check(Request $request) : RedirectResponse
     {
         $request->validate([
             'email'    => 'required|email|exists:admins,email',
@@ -24,34 +25,30 @@ class AdminController extends Controller
             'email.exists' => 'This email is not exists on admin table'
         ]);
 
-        $creds = $request->only('email', 'password');
-        if (Auth::guard('admin')->attempt($creds)) {
-            return back();  
-        } else {
-            return redirect()->route('admin.login')->with('fail', 'Incorrect credentials');
-        }
+
+        return   Auth::guard('admin')->attempt($request->only('email', 'password')) 
+                    ? back() 
+                    : redirect()->route('admin.login')->with('fail', 'Incorrect credentials');
+        
     }
 
-    public function logout()
+    public function logout() : RedirectResponse
     {
-        Auth::logout();
+        Auth::guard('admin')->logout();
         return redirect('/');
     }
 
     public function index(): View
     {
-        $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
+        $users    = User::with(['carts'])->withCount(['carts'])->latest()->get();
 
         $totalQty = $totalPrice = 0;
 
-        $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
-            $cartQty     = $product->carts->sum('qty');
-            $totalQty   += $product->qty + $cartQty;
-            return $product;
+        $cartQty = $users->map(function (User $users) {
+            $cartQty     = $users->carts->sum('qty');
+            return $cartQty;
         });
 
-        $totalProduct = Product::count();
-
-        return view('dashboard.admin.home', compact('products', 'totalQty', 'totalProduct'));
+        return view('dashboard.admin.home', compact('users', 'cartQty'));
     }
 }

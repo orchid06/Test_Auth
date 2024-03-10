@@ -16,4 +16,5 @@ class Product extends Model
     public function carts() :HasMany{
         return $this->hasMany(Cart::class,'product_id','id');
     }
+
 }

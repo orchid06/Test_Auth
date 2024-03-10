@@ -27,11 +27,10 @@
                 <div class="col-lg-8">
                   <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-5">
-                      <h1 class="fw-bold mb-0 text-black">Shopping Cart of {{Auth::user()->name}}</h1>
+                      <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
                       <h6 class="mb-0 text-muted"></h6>
                     </div>
-                    @if(count($cartProducts)>0)
-                    @foreach($cartProducts as $cartProduct)
+                    @forelse($cartProducts as $cartProduct)
                     <hr class="my-4">
 
                     <div class="row mb-4 d-flex justify-content-between align-items-center">
@@ -73,10 +72,11 @@
                         <a href="{{route('cart.productDelete' , ['id'=>$cartProduct->id])}}" type="submit" class="btn btn-danger">Delete</button></a>
                       </div>
                     </div>
-                    @endforeach
-                    @else
-                    <h3>No item Added to Cart </h3>
-                    @endif
+                    @empty
+                       <h3>No item Added to Cart </h3>
+
+                    @endforelse
+                   
 
                     <div class="pt-5">
                       <h6 class="mb-0"><a href="{{route('user.index')}}" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
