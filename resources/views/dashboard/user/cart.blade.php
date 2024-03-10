@@ -27,8 +27,10 @@
                 <div class="col-lg-8">
                   <div class="p-5">
                     <div class="d-flex justify-content-between align-items-center mb-5">
-                      <h1 class="fw-bold mb-0 text-black">Shopping Cart</h1>
-                      <h6 class="mb-0 text-muted"></h6>
+                      <h2 class="fw-bold mb-0 text-black">Shopping Cart</h2>
+                    </div>
+                    <div class="div">
+                    <h6 class="mb-0 text-muted">{{$user_name}}</h6>
                     </div>
                     @forelse($cartProducts as $cartProduct)
                     <hr class="my-4">

@@ -238,6 +238,7 @@ class ProductController extends Controller
     public function cartIndex():View
     {
         $user  = auth('web')->user();
+        $user_name = Auth::user()->name;
 
         $cartProducts = $user->carts;
         
@@ -247,7 +248,7 @@ class ProductController extends Controller
             return $cartProduct->price * $cartProduct->qty;
         });
 
-        return view('cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice'));
+        return view('dashboard.user.cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice', 'user_name'));
     }
 
 

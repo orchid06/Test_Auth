@@ -117,71 +117,24 @@
     <div class="row">
         <div class="col mb-10">
             <div class="container">
+
                 <div class="card card1">
-                    <!-- <form action="{{route('admin.check')}}" method="post">
-                        @csrf -->
                     <div class="header">
                         <h1>Admin Login</h1>
                     </div>
-                    <!-- <div class="input_area">
-
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Email">
-
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
-
-                                @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div> -->
                     <div class="actions">
-                        <form action="{{ route('admin.login') }}">
+                        <form action="{{ route('admin.index') }}">
                             <button type="submit" value="Login">Login</button>
                         </form>
                     </div>
-                    <!-- </form> -->
                 </div>
 
                 <div class="card card2">
-                    <!-- <form action="{{route('user.check')}}" method="post">
-                        @csrf -->
                     <div class="header">
                         <h1>User Login</h1>
                     </div>
-                    <!-- <div class="input_area">
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="Email">
-
-                                @error('email')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder="Password">
-
-                                @error('password')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                                @enderror
-                            </div>
-                        </div> -->
                     <div class="actions">
-                        <form action="{{ route('user.login') }}">
+                        <form action="{{ route('user.index') }}">
                             <button type="submit" value="Login">Login</button>
                         </form>
                         <p>
@@ -189,7 +142,6 @@
                             <a href="{{route('user.register')}}" class="Sign_up_link">Sign Up</a>
                         </p>
                     </div>
-                    <!-- </form> -->
                 </div>
             </div>
         </div>

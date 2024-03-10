@@ -13,7 +13,7 @@ use Illuminate\View\View;
 
 class UserController extends Controller
 {
-    public function create(Request $request):RedirectResponse
+    public function create(Request $request): RedirectResponse
     {
 
         $request->validate([
@@ -44,8 +44,8 @@ class UserController extends Controller
         ]);
 
         return   Auth::guard('web')->attempt($request->only('email', 'password'))
-                   ? back()
-                   : redirect()->route('user.login')->with('fail', 'Incorrect credentials');
+            ? redirect()->route('user.index')->with('success', 'you are logged in')
+            : redirect()->route('user.login')->with('fail', 'Incorrect credentials');
     }
 
     public function logout(): RedirectResponse
@@ -54,7 +54,7 @@ class UserController extends Controller
         return redirect('/');
     }
 
-    public function index():View
+    public function index(): View
     {
         $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
 
@@ -70,4 +70,30 @@ class UserController extends Controller
 
         return view('dashboard.user.home', compact('products', 'totalQty', 'totalProduct'));
     }
+
+    public function toggleActive(Request $request, $id)
+    {
+        $user = User::findorfail($id);
+        $user->update([
+            'is_active' => $request->input('is_active')
+        ]);
+
+        return redirect()->back()->with('success', 'User active status updated');
+    }
+
+    // public function toggleActive(Request $request)
+    // {
+    //     $userId = $request->input('id');
+    //     $user = User::find($userId);
+
+    //     if (!$user) {
+    //         return response()->json(['error' => 'User not found'], 404);
+    //     }
+
+    //     $user->update([
+    //         'is_active' => $request->input('is_active')
+    //     ]);
+
+    //     return response()->json(['message' => 'User active status updated successfully'], 200);
+    // }
 }

@@ -34,10 +34,13 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::view('/login', 'dashboard.user.login')->name('login');
         Route::view('/register', 'dashboard.user.register')->name('register');
         Route::post('/create', [UserController::class, 'create'])->name('create');
-        Route::post('/check', [UserController::class, 'check'])->name('check');
     });
 
-    Route::middleware(['auth'])->group(function () {
+    Route::post('/user/login', [UserController::class, 'check'])->name('check');
+    Route::post('/{id}/toggle-active', [UserController::class, 'toggleActive'])->name('toggleActive');
+
+
+    Route::middleware(['auth','user.verified'])->group(function () {
 
         Route::get('/home', [UserController::class, 'index'])->name('index');
         Route::post('/logout', [UserController::class, 'logout'])->name('logout');
@@ -57,7 +60,14 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::middleware(['auth:admin'])->group(function () {
         Route::get('/home', [AdminController::class, 'index'])->name('index');
         Route::post('/logout', [AdminController::class, 'logout'])->name('logout');
+        Route::get('/products', [AdminController::class, 'productView'])->name('products');
+        Route::get('/users', [AdminController::class, 'index'])->name('users');
+        Route::post('/userCreate', [AdminController::class, 'userCreate'])->name('userCreate');
     });
+
+    Route::get('/usercart/{id}', [AdminController::class, 'viewCart'])->name('viewCart');
+    Route::post('/userUpdate/{id}', [AdminController::class, 'userUpdate'])->name('userUpdate');
+    Route::get('/userDelete/{id}', [AdminController::class, 'userDelete'])->name('userDelete');
 });
 
 Route::name('product.')->group(function () {

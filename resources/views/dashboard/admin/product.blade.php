@@ -46,12 +46,6 @@
                                         </button>
 
                                     </div>
-                                    <div class="col-2 text-righ">
-                                        <a href="{{route('cart.index')}}" type="button" class="btn btn-outline-success">
-                                            My Cart
-                                            </button><i class="bi bi-cart"></i>
-                                        </a>
-                                    </div>
                                 </div>
 
                                 <div class="mt-3">
