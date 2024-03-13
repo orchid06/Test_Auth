@@ -162,7 +162,8 @@
         }
 
         a:hover {
-            text-decoration: underline;
+            color: black;
+            text-decoration: none;
         }
     </style>
     <meta charset="UTF-8">

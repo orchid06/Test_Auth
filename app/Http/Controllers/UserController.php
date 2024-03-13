@@ -122,7 +122,7 @@ class UserController extends Controller
         $oldPassword = $request->input('oldPassword');
 
         if ($oldPassword && !Hash::check($oldPassword, $user->password)) {
-            return back()->with('error', 'Can not update password , You old password did not match ');
+            return back()->with('error', 'Can not update password , Wrong Current Password ');
         }
 
         $user->update([

@@ -41,7 +41,7 @@
 
         a:hover {
             color: black;
-            text-decoration: underline;
+            text-decoration: none;
         }
 
         a:active {

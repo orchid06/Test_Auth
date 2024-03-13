@@ -45,7 +45,7 @@
                                         </div>
                                     </form>
                                     <!-- Cart Button -->
-                                    <a href="{{ Auth::check() ? route('cart.index', ['user_id' => Auth::user()->id]) : '#' }}" class="btn btn-outline-success">
+                                    <a href="{{ Auth::check() ? route('cart.index', ['user_id' => Auth::user()->id]) : '#' }}" class="btn btn-dark">
                                         My Cart
                                         <i class="bi bi-cart"></i>
                                     </a>
@@ -88,7 +88,7 @@
                                                         </div>
                                                         <div class="col-6">
                                                             <div class="input-group">
-                                                                <button type="submit" class="btn btn-outline-success" style="font-size: 12px;">Add To Cart</button>
+                                                                <button type="submit" class="btn btn-dark" style="font-size: 12px;">Add To Cart</button>
                                                             </div>
                                                         </div>
                                                     </div>
