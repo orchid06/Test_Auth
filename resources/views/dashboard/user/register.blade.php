@@ -10,17 +10,17 @@
                 <div class="card-body">
                     @if(Session::get('success'))
                     <div class="alert alert-success">
-                         {{Session::get('success')}}
+                        {{Session::get('success')}}
                     </div>
                     @endif
 
                     @if(Session::get('fail'))
                     <div class="alert alert-danger">
-                         {{Session::get('fail')}}
+                        {{Session::get('fail')}}
                     </div>
                     @endif
-                    
-                    <form method="POST" action="{{ route('user.create') }}">
+
+                    <form method="POST" action="{{ route('user.create') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row mb-3">
@@ -30,9 +30,9 @@
                                 <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus>
 
                                 @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
                             </div>
                         </div>
@@ -44,10 +44,18 @@
                                 <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email">
 
                                 @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Photo :') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="image" type="file" class="form-control" name="image" >
                             </div>
                         </div>
 
@@ -58,9 +66,9 @@
                                 <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
 
                                 @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
                             </div>
                         </div>
@@ -72,9 +80,9 @@
                                 <input id="cpassword" type="password" class="form-control @error('cpassword') is-invalid @enderror" name="cpassword" required autocomplete="new-password">
 
                                 @error('cpassword')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
                                 @enderror
                             </div>
                         </div>

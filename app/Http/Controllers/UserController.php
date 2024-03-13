@@ -9,23 +9,36 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\Product;
 use App\Models\Cart;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    public function uploadImage(mixed $file): string
+    {
+        $imageName = uniqid() . '.' . $file->getClientOriginalExtension();
+        $file->move('uploads/user/', $imageName);
+        return $imageName;
+    }
+
     public function create(Request $request): RedirectResponse
     {
 
         $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:5|max:30',
+            'name'      => 'required',
+            'email'     => 'required|email|unique:users,email',
+            'image'     => 'image',
+            'password'  => 'required|min:5|max:30',
             'cpassword' => 'required|min:5|max:30|same:password'
         ]);
 
+        $imageName      = $request->hasFile('image') ? $this->uploadImage($request->file('image'))
+            : null;
+
         $user = new User();
         $user->name     = $request->input('name');
-        $user->email    = $request->email;
+        $user->email    = $request->input('email');
+        $user->image    = $imageName ?? null;
         $user->password = ($request->password);
         $user->save();
 
@@ -56,22 +69,12 @@ class UserController extends Controller
 
     public function index(): View
     {
-        $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
+        $products = Product::paginate(3);
 
-        $totalQty = $totalPrice = 0;
-
-        $products = $products->map(function (Product $product) use (&$totalQty, &$totalPrice) {
-            $cartQty     = $product->carts->sum('qty');
-            $totalQty   += $product->qty + $cartQty;
-            return $product;
-        });
-
-        $totalProduct = Product::count();
-
-        return view('dashboard.user.home', compact('products', 'totalQty', 'totalProduct'));
+        return view('dashboard.user.home', compact('products'));
     }
 
-    public function toggleActive(Request $request, $id)
+    public function toggleActive(Request $request, $id): RedirectResponse
     {
         $user = User::findorfail($id);
         $user->update([
@@ -81,19 +84,60 @@ class UserController extends Controller
         return redirect()->back()->with('success', 'User active status updated');
     }
 
-    // public function toggleActive(Request $request)
-    // {
-    //     $userId = $request->input('id');
-    //     $user = User::find($userId);
+    public function userProfile(int $id): View
+    {
+        $user = User::findorfail($id);
 
-    //     if (!$user) {
-    //         return response()->json(['error' => 'User not found'], 404);
-    //     }
+        $latestProduct = $user->carts()
+            ->latest()
+            ->first();
+        $latestProduct ? $productName = $latestProduct->product->product_name
+            : $productName = "No product Added";
 
-    //     $user->update([
-    //         'is_active' => $request->input('is_active')
-    //     ]);
+        return view('dashboard.user.profile')->with('user', $user);
+    }
 
-    //     return response()->json(['message' => 'User active status updated successfully'], 200);
-    // }
+    public function userUpdate(Request $request, int $id): RedirectResponse
+    {
+        if ($request->name) {
+            $request->validate([
+                'name' => 'required',
+                'email' => 'required|email',
+            ]);
+        }
+
+        if ($request->newPassword) {
+            $request->validate([
+                'newPassword'  => 'required|min:5|max:30',
+                'cPassword' => 'required|min:5|max:30|same:newPassword'
+            ]);
+        }
+
+        $user = User::findOrFail($id);
+
+        $imageName = $request->hasFile('image')
+            ? $this->uploadImage($request->file('image'))
+            : $user->image;
+
+        $oldPassword = $request->input('oldPassword');
+
+        if ($oldPassword && !Hash::check($oldPassword, $user->password)) {
+            return back()->with('error', 'Can not update password , You old password did not match ');
+        }
+
+        $user->update([
+            'name'      => $request->input('name')        ?? $user->name,
+            'email'     => $request->input('email')       ?? $user->email,
+            'image'     => $imageName,
+            'password'  => $request->input('newPassword') ?? $user->password,
+        ]);
+
+        return back()->with('success', 'User Updated');
+    }
+
+    public function checkOut()
+    {
+        return view('dashboard.user.payment');
+
+    }
 }

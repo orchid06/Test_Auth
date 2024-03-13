@@ -30,7 +30,7 @@
                       <h2 class="fw-bold mb-0 text-black">Shopping Cart</h2>
                     </div>
                     <div class="div">
-                    <h6 class="mb-0 text-muted">{{$user_name}}</h6>
+                    <h4 class="mb-0 text-muted">{{$user_name}}</h4>
                     </div>
                     @forelse($cartProducts as $cartProduct)
                     <hr class="my-4">
@@ -45,7 +45,7 @@
                       </div>
 
                       <div class="col-md-3 col-lg-3 col-xl-2 d-flex">
-                        <form action="{{route('cart.qtyUpdate' ,['product_id'=>$cartProduct->product_id])}}" method="post">
+                        <form action="{{route('cart.qtyUpdate' ,['id'=>$user_id])}}" method="post">
                           @csrf
                           <div class="row">
 
@@ -81,7 +81,7 @@
                    
 
                     <div class="pt-5">
-                      <h6 class="mb-0"><a href="{{route('user.index')}}" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Back to shop</a></h6>
+                      <h6 class="mb-0"><a href="{{url()->previous()}}" class="text-body"><i class="fas fa-long-arrow-alt-left me-2"></i>Go Back</a></h6>
                     </div>
                   </div>
                 </div>
@@ -103,7 +103,7 @@
                       <h5> {{$totalCartPrice}} ৳</h5>
                     </div>
 
-                    <a href="{{route('product.purchased')}}" type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Check Out</button></a>
+                    <a href="{{route('user.checkOut', ['id' => $user_id])}}" type="button" class="btn btn-dark btn-block btn-lg" data-mdb-ripple-color="dark">Check Out</button></a>
 
                   </div>
                 </div>

@@ -228,31 +228,26 @@
                     </ul>
                 </div>
                 <nav id="sidebarMenu" class="collapse d-lg-block sidebar collapse bg-white shadow-sm">
-                    <div class="position-sticky">
-                        <div class="list-group list-group-flush mx-3 mt-4">
-                            <div class="list-group-item " aria-current="true">
-                                <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
-                            </div>
-                            <a href="{{route('admin.users')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
-                                <i class="fas fa-chart-area fa-fw me-3"></i><span>Users</span>
-                            </a>
-                            <a href="{{route('admin.products')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
-                                <i class="fas fa-chart-area fa-fw me-3"></i><span>Products</span>
-                            </a>
+                <div class="position-sticky">
+                    <div class="list-group list-group-flush mx-3 mt-4">
+                        <div class="list-group-item " aria-current="true">
+                            <i class="fas fa-tachometer-alt fa-fw me-3"></i><span>Main dashboard</span>
                         </div>
+                        <a href="{{route('admin.users')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
+                            <i class="fas fa-chart-area fa-fw me-3"></i><span>Users</span>
+                        </a>
+                        <a href="{{route('admin.products')}}" class="list-group-item list-group-item-action py-2 ripple inactive">
+                            <i class="fas fa-chart-area fa-fw me-3"></i><span>Products</span>
+                        </a>
                     </div>
-                </nav>
+                </div>
+            </nav>
             </div>
-
         </nav>
-
-        <main class="py-4">
+        <main>
             @yield('content')
         </main>
     </div>
 </body>
-
-<script src="https://gitcdn.github.io/bootstrap-toggle/2.2.2/js/bootstrap-toggle.min.js"></script>
-
 
 </html>

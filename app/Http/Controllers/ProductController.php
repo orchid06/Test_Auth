@@ -18,7 +18,7 @@ class ProductController extends Controller
 
     public function index(): View
     {
-        $products = Product::with(['carts'])->withCount(['carts'])->latest()->get();
+        $products = Product::with(['carts'])->withCount(['carts'])->latest()->paginate(3);
 
         $totalQty = $totalPrice = 0;
 
@@ -110,7 +110,7 @@ class ProductController extends Controller
         return back()->with('success', 'Data stored successfully');
     }
 
-    public function update(Request $request, int $id):RedirectResponse
+    public function update(Request $request, int $id): RedirectResponse
     {
         $request->validate([
             'title'       => 'required|max:50',
@@ -127,11 +127,11 @@ class ProductController extends Controller
         $price        = $request->input('price');
         $discountType = $request->input('type');
 
-        $discountedPrice = $discountType == 1 ? $price - ($price * $discount * (1 / 100))
+        $discountedPrice = $discountType == 0 ? $price - ($price * $discount * (1 / 100))
             : $price - $discount;
 
-        $discountType    = $discountType == 1 ? "%"
-            : "৳";
+        $discountType    = $discountType == 0 ? "%"
+            : "৳ Flat";
 
 
         $imageName = $request->hasFile('image')
@@ -157,7 +157,7 @@ class ProductController extends Controller
         return back()->with('success', 'Product Updated');
     }
 
-    public function delete( int $id):RedirectResponse
+    public function delete(int $id): RedirectResponse
     {
 
         $product = Product::findOrfail($id);
@@ -173,10 +173,12 @@ class ProductController extends Controller
         $imagePath = public_path("uploads/{$product->image}");
         $this->deleteFile($imagePath);
 
-        foreach ($product->gallery_image as $galleryFileName) {
-            $galleryPath = public_path("uploads/gallery/{$galleryFileName}");
-            if (file_exists($galleryPath)) {
-                @unlink($galleryPath);
+        if ($product->gallery_image) {
+            foreach ($product->gallery_image as $galleryFileName) {
+                $galleryPath = public_path("uploads/gallery/{$galleryFileName}");
+                if (file_exists($galleryPath)) {
+                    @unlink($galleryPath);
+                }
             }
         }
 
@@ -186,7 +188,7 @@ class ProductController extends Controller
         return back()->with('success', 'Product deleted successfully.');
     }
 
-    public function search(Request $request):View
+    public function search(Request $request): View
     {
         $search = $request->input('search');
 
@@ -197,7 +199,7 @@ class ProductController extends Controller
         $totalQty      = Product::sum('qty');
         $totalPrice    = Product::sum('price');
 
-        return view('product', compact(
+        return view('dashboard.user.home', compact(
             'products',
             'totalQty',
             'totalPrice',
@@ -205,7 +207,7 @@ class ProductController extends Controller
         ));
     }
 
-    public function addToCart(Request $request, $id):RedirectResponse
+    public function addToCart(Request $request, $id): RedirectResponse
     {
 
         $product = Product::findOrfail($id);
@@ -214,7 +216,9 @@ class ProductController extends Controller
             'qty' => 'required|numeric|gt:0|max:' . $product->qty,
         ]);
 
-        $existingCartItem = Cart::where('product_id', $product->id)->first();
+        $existingCartItem = Cart::where('product_id', $product->id)
+            ->where('user_id', auth('web')->id())
+            ->first();
 
         if ($existingCartItem) {
             $existingCartItem->update(['qty' => $existingCartItem->qty + $request->input('qty')]);
@@ -224,7 +228,7 @@ class ProductController extends Controller
                 'user_id'     => Auth::user()->id,
                 'product_id'  => $product->id,
                 'qty'         => $request->input('qty'),
-                'price'       => $product->price,
+                'price'       => $product->discountedPrice,
 
             ]);
         }
@@ -235,26 +239,27 @@ class ProductController extends Controller
         return back()->with('success', 'Item added to cart successfully.');
     }
 
-    public function cartIndex():View
+    public function cartIndex(): View
     {
         $user  = auth('web')->user();
         $user_name = Auth::user()->name;
+        $user_id = Auth::user()->id;
 
         $cartProducts = $user->carts;
-        
+
         $totalCartProduct = $cartProducts->count();
         $totalCartQty     = $cartProducts->sum('qty');
         $totalCartPrice   = $cartProducts->sum(function ($cartProduct) {
             return $cartProduct->price * $cartProduct->qty;
         });
 
-        return view('dashboard.user.cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice', 'user_name'));
+        return view('dashboard.user.cart', compact('cartProducts', 'totalCartProduct', 'totalCartQty', 'totalCartPrice', 'user_name', 'user_id'));
     }
 
 
-    public function cartQtyUpdate(Request $request, $product_id):RedirectResponse
+    public function cartQtyUpdate(Request $request, $id): RedirectResponse
     {
-        $cart     = Cart::where('product_id', $product_id)->firstOrfail();
+        $cart     = Cart::where('user_id', $id)->firstorfail();
         $product  = $cart->product;
 
 
@@ -273,12 +278,11 @@ class ProductController extends Controller
 
         $newQty = $stockQty;
 
-        #todo simplification needed using  match or switch 
-        if ($qtyDifference > 0) {
-            $newQty = $stockQty + $qtyDifference;
-        } elseif ($qtyDifference < 0) {
-            $newQty = $stockQty - abs($qtyDifference);
-        }
+        $newQty = match (true) {
+            $qtyDifference > 0 => $stockQty + $qtyDifference,
+            $qtyDifference < 0 => $stockQty - abs($qtyDifference),
+            default => $stockQty
+        };
 
 
         $product->update(['qty' => $newQty]);
@@ -290,7 +294,7 @@ class ProductController extends Controller
     }
 
 
-    public function cartProductDelete($id):RedirectResponse
+    public function cartProductDelete($id): RedirectResponse
     {
         $cartProduct = Cart::findOrFail($id);
 
@@ -305,7 +309,7 @@ class ProductController extends Controller
     }
 
 
-    public function productDetails($id):View
+    public function productDetails($id): View
     {
 
         $product = Product::findOrfail($id);
@@ -316,10 +320,5 @@ class ProductController extends Controller
         $totalOrder = $orderProducts->sum('qty');
 
         return view('productDetails', compact('product', 'totalOrder'));
-    }
-
-
-    public function purchased()
-    {
     }
 }

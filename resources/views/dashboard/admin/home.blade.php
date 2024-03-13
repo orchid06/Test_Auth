@@ -43,7 +43,7 @@
                     <div class="modal-header">
                         <h6 class="modal-title text center" id="exampleModalLabel">Add New User</h6>
                     </div>
-                    <form method="POST" action="{{ route('admin.userCreate') }}">
+                    <form method="POST" action="{{ route('admin.userCreate') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="row mb-3">
@@ -71,6 +71,14 @@
                                     <strong>{{ $message }}</strong>
                                 </span>
                                 @enderror
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Photo :') }}</label>
+
+                            <div class="col-md-6">
+                                <input id="image" type="file" class="form-control" name="image">
                             </div>
                         </div>
 
@@ -118,20 +126,20 @@
                         <table class="table user-list">
                             <thead>
                                 <tr>
-                                    <th><span>User</span></th>
+                                    <th class="text-center"><span>User</span></th>
                                     <th><span>Created</span></th>
                                     <th><span>On Cart</span></th>
-                                    <th class="text-center"><span>Active</span></th>
-                                    <th><span>Email</span></th>
-                                    <th>&nbsp;</th>
+                                    <th><span>Status</span></th>
+                                    <th class="text-center"><span>Email</span></th>
+                                    <th class="text-center">&nbsp;</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach($users as $user)
                                 <tr>
                                     <td>
-                                        <img src="https://bootdey.com/img/Content/user_1.jpg" alt="">
-                                        <a href="#" class="user-link">{{$user->name}}</a>
+                                        <img src="{{url('uploads/user/'.$user->image)}}" alt="">
+                                        <a href="{{route('user.userProfile' , ['id' => $user->id])}}" class="user-link">{{$user->name}}</a>
                                     </td>
                                     <td>2013/08/12</td>
                                     <td><a href="{{route('admin.viewCart', ['id'=>$user->id])}}">{{$user->carts_count}}</a></td>
@@ -139,12 +147,11 @@
                                         <form method="post" action="{{ route('user.toggleActive', ['id'=>$user->id])}}">
                                             @csrf
                                             @method('POST')
-                                            <input type="hidden" name="is_active" value="0">
-                                            <input type="checkbox" name="is_active" value="1" {{ $user->is_active ? 'checked' : '' }}>
-                                            <button type="submit" class="btn btn-secondary btn-sm">Active</button>
+                                            <input type="hidden" name="is_active" value="{{ $user->is_active ? '0' : '1' }}">
+                                            <button type="submit" class="{{ $user->is_active ? 'btn btn-success btn-sm' : 'btn btn-secondary btn-sm' }}">
+                                                {{ $user->is_active ? 'Deactivate' : 'Activate' }}
+                                            </button>
                                         </form>
-                                        <!-- <input type="hidden" id="is_active" name="is_active" value="{{ $user->is_active ? '1' : '0' }}">
-                                        <input type="checkbox" id="toggle_active" {{ $user->is_active ? 'checked' : '' }} onchange="toggleActive()"> -->
                                     </td>
                                     <td>
                                         {{$user->email}}
@@ -152,7 +159,7 @@
                                     <td style="width: 20%;">
 
                                         <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#editModal{{$user->id}}">
-                                            <span class="fa-stack">
+                                            <span class="fa-stack text-secondary">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                             </span>
@@ -196,10 +203,18 @@
                                                                 </div>
 
                                                                 <div class="row mb-3">
+                                                                    <label for="image" class="col-md-4 col-form-label text-md-end">{{ __('Photo :') }}</label>
+
+                                                                    <div class="col-md-6">
+                                                                        <input id="image" type="file" class="form-control" name="image">
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3">
                                                                     <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password') }}</label>
 
                                                                     <div class="col-md-6">
-                                                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="new-password">
+                                                                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" autocomplete="new-password">
 
                                                                         @error('password')
                                                                         <span class="invalid-feedback" role="alert">
@@ -213,7 +228,7 @@
                                                                     <label for="cpassword" class="col-md-4 col-form-label text-md-end">{{ __('Confirm Password') }}</label>
 
                                                                     <div class="col-md-6">
-                                                                        <input id="cpassword" type="password" class="form-control @error('cpassword') is-invalid @enderror" name="cpassword" required autocomplete="new-password">
+                                                                        <input id="cpassword" type="password" class="form-control @error('cpassword') is-invalid @enderror" name="cpassword" autocomplete="new-password">
 
                                                                         @error('cpassword')
                                                                         <span class="invalid-feedback" role="alert">
@@ -235,8 +250,8 @@
                                         </div>
 
 
-                                        <button type="button" class="btn btn-light" data-bs-toggle="modal" data-bs-target="#deleteModal{{$user->id}}">
-                                            <span class="fa-stack">
+                                        <button type="button" class="btn " data-bs-toggle="modal" data-bs-target="#deleteModal{{$user->id}}">
+                                            <span class="fa-stack text-danger">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-trash-o fa-stack-1x fa-inverse"></i>
                                             </span>

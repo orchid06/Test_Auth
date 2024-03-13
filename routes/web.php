@@ -45,6 +45,9 @@ Route::prefix('user')->name('user.')->group(function () {
         Route::get('/home', [UserController::class, 'index'])->name('index');
         Route::post('/logout', [UserController::class, 'logout'])->name('logout');
         Route::post('/cart', [UserController::class, 'userCart'])->name('cart');
+        Route::get('/profile/{id}', [UserController::class, 'userProfile'])->name('userProfile');
+        Route::post('/usrUpdate/{id}', [UserController::class, 'userUpdate'])->name('userUpdate');
+        Route::get('cart/checkOut/{id}', [UserController::class, 'checkOut'])->name('checkOut');
     });
 });
 
@@ -63,6 +66,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/products', [AdminController::class, 'productView'])->name('products');
         Route::get('/users', [AdminController::class, 'index'])->name('users');
         Route::post('/userCreate', [AdminController::class, 'userCreate'])->name('userCreate');
+        Route::get('/search', [AdminController::class, 'search'])->name('search'); 
     });
 
     Route::get('/usercart/{id}', [AdminController::class, 'viewCart'])->name('viewCart');
@@ -84,7 +88,5 @@ Route::name('cart.')->group(function () {
 
     Route::get('/cart/', [ProductController::class, 'cartIndex'])->name('index');
     Route::get('/cart/delete/{id}', [ProductController::class, 'cartProductDelete'])->name('productDelete');
-    Route::post('cart/QtyUpdate/{product_id}', [ProductController::class, 'cartQtyUpdate'])->name('qtyUpdate');
+    Route::post('cart/QtyUpdate/{id}', [ProductController::class, 'cartQtyUpdate'])->name('qtyUpdate');
 });
-
-Route::get('cart/purchased', [ProductController::class, 'purchased'])->name('product.purchased');
