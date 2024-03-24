@@ -74,7 +74,7 @@ class UserController extends Controller
         return view('dashboard.user.home', compact('products'));
     }
 
-    public function toggleActive(Request $request, $id): RedirectResponse
+    public function toggleActive(Request $request, int $id): RedirectResponse
     {
         $user = User::findorfail($id);
         $user->update([

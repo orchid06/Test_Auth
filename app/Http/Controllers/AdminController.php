@@ -153,10 +153,10 @@ class AdminController extends Controller
 
     public function search(Request $request): View
     {
-        $search = $request->input('search');
+        $search = "%".$request->input('search')."%";
 
-        $products = Product::where('title', 'LIKE', "%$search%")
-            ->orWhere('description', 'LIKE', "%$search%")->paginate(3);
+        $products = Product::where('title', 'LIKE', $search )
+            ->orWhere('description', 'LIKE', $search )->paginate(3);
 
         $totalProduct  = Product::count();
         $totalQty      = Product::sum('qty');
